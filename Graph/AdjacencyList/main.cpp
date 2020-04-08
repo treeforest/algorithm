@@ -4,23 +4,26 @@
 void TestUDGraph_List();
 void TestDGraph_List();
 
-typedef char VexType;
-typedef int EdgeType;
+typedef char VertexType;
+typedef string VertexInfo;
+typedef int EdgeInfo;
 
-typedef BOOL(*FuncType)(VexType v1, VexType v2);
-BOOL compare(VexType v1, VexType v2) {
+typedef BOOL(*FuncType)(VertexType v1, VertexType v2);
+BOOL compare(VertexType v1, VertexType v2) {
 	if (v1 == v2) return TRUE;
 	return FALSE;
 }
 
 int main() {
-	TestUDGraph_List();
+	
+	//TestUDGraph_List();
 	TestDGraph_List();
+
 	return 0;
 }
 
 void TestUDGraph_List() {
-	ALGraph<VexType, EdgeType, FuncType> G(compare, UDG);
+	ALGraph<VertexType, VertexInfo, EdgeInfo, FuncType> G(compare, UDN);
 	G.InsertVex('a');
 	G.InsertVex('b');
 	G.InsertVex('c');
@@ -56,11 +59,13 @@ void TestUDGraph_List() {
 }
 
 void TestDGraph_List() {
-	ALGraph<VexType, EdgeType, FuncType> G(compare, DG);
+	ALGraph<VertexType, VertexInfo, EdgeInfo, FuncType> G(compare, DN);
 	G.InsertVex('a');
 	G.InsertVex('b');
 	G.InsertVex('c');
 	G.InsertVex('d');
+
+	G.SetVex('a', " 这是a的顶点信息 ");
 
 	G.InsertEdge('a', 'b');
 	G.InsertEdge('a', 'c');
