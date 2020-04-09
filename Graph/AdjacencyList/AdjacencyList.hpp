@@ -157,6 +157,9 @@ public:
 	// 获取当前顶点数量
 	virtual int GetVexNum() const { return m_vexnum; }
 
+	// 获取邻接表。
+	virtual const VNode<VertexType, VertexInfo, EdgeInfo>* GetAdjList() const { return m_szVex; }
+
 	// 测试输出
 	void PrintInfo();
 
