@@ -12,44 +12,45 @@ bool Compare(ElemType e1, ElemType e2) {
 }
 
 int main() {
-	SqList<ElemType>* sq = SqList<ElemType>::CreateList();
-	assert(sq);
+	SqList<ElemType>* lst = new SqList<ElemType>();
+	assert(lst);
 
-	assert(sq->Empty());
-	cout << "len:" << sq->Length() << endl;
-	cout << "cap:" << sq->Capacity() << endl;
+	assert(lst->Empty());
+	cout << "len:" << lst->Len() << endl;
+	cout << "cap:" << lst->Cap() << endl;
 
 	for (int i = 1; i <= 33; i++) {
-		assert(sq->Insert(sq->Length(), i));
+		assert(lst->Insert(lst->Len(), i));
 	}
 
+	assert(!lst->Empty());
 	cout << "插入元素后：" << endl;
-	cout << "len:" << sq->Length() << endl;
-	cout << "cap:" << sq->Capacity() << endl;
+	cout << "len:" << lst->Len() << endl;
+	cout << "cap:" << lst->Cap() << endl;
 
 	ElemType e;
-	assert(sq->Get(1, e));
-	assert(false == sq->Get(34, e));
-	assert(sq->Get(31, e));
+	assert(lst->Get(1, e));
+	assert(!lst->Get(34, e));
+	assert(lst->Get(31, e));
 
-	cout << "元素 10 的位置索引 = " << sq->Locate(10, Compare) << endl;
-
-	assert(false == sq->Prior(0, e, Compare));
-	assert(sq->Prior(6, e, Compare));
+	assert(!lst->Prior(0, e, Compare));
+	assert(lst->Prior(6, e, Compare));
 	cout << "元素 6 前面的元素为: " << e << endl;
 
-	assert(false == sq->Next(33, e, Compare));
-	assert(sq->Next(6, e, Compare));
+	assert(!lst->Next(33, e, Compare));
+	assert(lst->Next(6, e, Compare));
 	cout << "元素 6 后面的元素为：" << e << endl;
 
 	cout << "删除元素：";
-	for (int i = 0; i < 5; i++) {
-		assert(sq->Delete(0, e));
+	int len = lst->Len();
+	for (int i = 1; i <= len; i++) {
+		assert(lst->Delete(0, e));
 		cout << e << " ";
 	}
+
+	assert(!lst->Delete(0, e));
 	
-	assert(sq->Free());
-	delete sq;
+	delete lst;
 
 	return 0;
 }

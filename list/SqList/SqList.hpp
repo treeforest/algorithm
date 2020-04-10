@@ -8,24 +8,23 @@ template<typename ElemType>
 class SqList
 {
 public:
-	SqList(int initLen = LIST_INIT_SIZE);
+	SqList(int initlen = LIST_INIT_SIZE);
 	~SqList();
-
-	bool Free();
-	bool Clear();
-	bool Empty() const;
-	int Length() const;
-	int Capacity() const;
-	bool Get(int i, ElemType& e);
+	
 	int Locate(ElemType e, bool(*compare)(ElemType, ElemType));
-	bool Prior(ElemType cur, ElemType& pre, bool(*compare)(ElemType, ElemType));
-	bool Next(ElemType cur, ElemType& next, bool(*compare)(ElemType, ElemType));
+	
 	bool Insert(int i, const ElemType e);
 	bool Delete(int i, ElemType& e);
+	bool Get(int i, ElemType& e);
 
-	static SqList<ElemType>* CreateList(int initLen = LIST_INIT_SIZE);
-private:
-	bool InitList(int initlen);
+	bool Prior(ElemType cur, ElemType& pre, bool(*compare)(ElemType, ElemType));
+	bool Next(ElemType cur, ElemType& next, bool(*compare)(ElemType, ElemType));
+
+	bool Clear();
+
+	int Len() const { return m_len; };
+	int Cap() const { return m_cap; }
+	bool Empty() const { return m_len == 0 ? true : false; }
 
 private:
 	int m_len; // len
@@ -34,7 +33,7 @@ private:
 };
 
 template<typename ElemType>
-bool SqList<ElemType>::InitList(int initlen)
+SqList<ElemType>::SqList(int initlen)
 {
 	m_sqlist = (ElemType*)malloc(initlen * sizeof(ElemType));
 	if (m_sqlist == NULL) {
@@ -43,45 +42,17 @@ bool SqList<ElemType>::InitList(int initlen)
 
 	m_len = 0;
 	m_cap = initlen;
-	return true;
-}
-
-template<typename ElemType>
-SqList<ElemType>::SqList(int initLen)
-{
-	InitList(initLen);
 }
 
 template<typename ElemType>
 SqList<ElemType>::~SqList()
 {
-	Free();
-}
-
-template<typename ElemType>
-SqList<ElemType>* SqList<ElemType>::CreateList(int initlen)
-{
-	SqList<ElemType>* sq = new SqList<ElemType>();
-	if (sq == NULL) {
-		return NULL;
+	if (m_sqlist) {
+		delete[] m_sqlist;
+		m_sqlist = NULL;
+		m_len = 0;
+		m_cap = 0;
 	}
-
-	sq->InitList(initlen);
-	return sq;
-}
-
-template<typename ElemType>
-bool SqList<ElemType>::Free()
-{
-	if (!m_sqlist)
-		return false;
-
-	delete[] m_sqlist;
-	m_sqlist = NULL;
-	m_len = 0;
-	m_cap = 0;
-
-	return true;
 }
 
 template<typename ElemType>
@@ -91,31 +62,9 @@ bool SqList<ElemType>::Clear()
 		return false;
 	}
 
-	m_sqlist = (ElemType*)malloc(m_cap * sizeof(ElemType));
+	// 惰性的清理空间，保留已经分配的内存
 	m_len = 0;
 	return true;
-}
-
-template<typename ElemType>
-bool SqList<ElemType>::Empty() const
-{
-	if (m_len == 0) {
-		return true;
-	}
-
-	return false;
-}
-
-template<typename ElemType>
-int SqList<ElemType>::Length() const
-{
-	return m_len;
-}
-
-template<typename ElemType>
-int SqList<ElemType>::Capacity() const
-{
-	return m_cap;
 }
 
 template<typename ElemType>
@@ -198,9 +147,10 @@ bool SqList<ElemType>::Insert(int i, const ElemType e)
 template<typename ElemType>
 bool SqList<ElemType>::Delete(int i, ElemType& e)
 {
-	if (i < 0 || i >= m_len)
+	if (i < 0 || i >= m_len) {
 		return false;
-
+	}
+		
 	ElemType* p = NULL;
 	ElemType* q = NULL;
 
