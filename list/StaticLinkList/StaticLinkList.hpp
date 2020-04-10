@@ -22,8 +22,10 @@ public:
 	bool Delete(int i, ElemType& e);
 	bool Modify(int i, ElemType e);
 	bool Get(int i, ElemType& e);
+
 	int Len() const { return m_len; }
 	int Cap() const { return m_cap; }
+	bool Empty() const { return m_len == 0 ? true : false; }
 
 private:
 	// 返回可分配的空间索引
@@ -31,9 +33,9 @@ private:
 	// 释放索引为 i 的空间
 	void Free(int i);
 	// 获取第 i 个元素的前驱指针
-	int Prior(int i);
+	int PriorPointer(int i);
 	// 获取指向第 i 个元素的指针
-	int Locate(int i);
+	int Pointer(int i);
 
 private:
 	SLNode<ElemType> m_sllist[MAXSIZE + 2];
@@ -44,7 +46,7 @@ private:
 template<typename ElemType>
 bool SLList<ElemType>::Get(int i, ElemType& e)
 {
-	int k = Locate(i);
+	int k = Pointer(i);
 	if (k == ERROR) {
 		return false;
 	}
@@ -54,9 +56,9 @@ bool SLList<ElemType>::Get(int i, ElemType& e)
 }
 
 template<typename ElemType>
-int SLList<ElemType>::Locate(int i)
+int SLList<ElemType>::Pointer(int i)
 {
-	int k = Prior(i);
+	int k = PriorPointer(i);
 	if (k == ERROR) {
 		return ERROR;
 	}
@@ -67,7 +69,7 @@ int SLList<ElemType>::Locate(int i)
 template<typename ElemType>
 bool SLList<ElemType>::Modify(int i, ElemType e)
 {
-	int k = Locate(i);
+	int k = Pointer(i);
 	if (k == ERROR) {
 		return false;
 	}
@@ -99,7 +101,7 @@ int SLList<ElemType>::Malloc()
 }
 
 template<typename ElemType>
-int SLList<ElemType>::Prior(int i)
+int SLList<ElemType>::PriorPointer(int i)
 {
 	if (i < 1 || i > m_len) {
 		return ERROR;
@@ -116,7 +118,7 @@ int SLList<ElemType>::Prior(int i)
 template<typename ElemType>
 bool SLList<ElemType>::Delete(int i, ElemType& e)
 {
-	int k = Prior(i);
+	int k = PriorPointer(i);
 	if (k == ERROR) {
 		return false;
 	}
@@ -143,7 +145,7 @@ bool SLList<ElemType>::Insert(int i, const ElemType e)
 	}
 
 	// 找到第 i 个节点的前驱 k
-	int k = Prior(i);
+	int k = PriorPointer(i);
 	if (k == ERROR) {
 		return false;
 	}

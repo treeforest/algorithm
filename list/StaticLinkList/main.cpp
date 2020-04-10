@@ -6,6 +6,8 @@ using namespace std;
 int main() {
 	SLList<int>* lst = new SLList<int>();
 
+	assert(lst->Empty());
+
 	for (int i = MAXSIZE; i >= 1; i--) {
 		cout << i << " ";
 		assert(lst->Insert(1, i));
