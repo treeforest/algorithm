@@ -19,14 +19,16 @@ public:
 	bool Delete(int i, ElemType& e);
 	bool Modify(int i, ElemType e);
 	bool Get(int i, ElemType& e);
-	int Cap() const { return m_cap; };
+
+	int Len() const { return m_len; };
+	bool Empty() const { return m_len == 0 ? true : false; }
 
 private:
 	LNode<ElemType>* Prior(int i);
 	LNode<ElemType>* Find(int i);
 
 private:
-	int m_cap;
+	int m_len;
 	LNode<ElemType>* m_head;
 	LNode<ElemType>* m_tail;
 };
@@ -41,7 +43,7 @@ LinkList<ElemType>::LinkList()
 
 	m_head->next = NULL;
 	m_tail = m_head;
-	m_cap = 0;
+	m_len = 0;
 }
 
 template<typename ElemType>
@@ -70,7 +72,7 @@ inline bool LinkList<ElemType>::Insert(int i, const ElemType e)
 	q->data = e;
 	q->next = pre->next;
 	pre->next = q;
-	++m_cap;
+	++m_len;
 
 	return true;
 }
@@ -86,7 +88,7 @@ inline bool LinkList<ElemType>::Delete(int i, ElemType& e)
 	LNode<ElemType>* q = pre->next;
 	pre->next = q->next;
 	delete q;
-	--m_cap;
+	--m_len;
 
 	return true;
 }
@@ -120,7 +122,7 @@ inline bool LinkList<ElemType>::Get(int i, ElemType& e)
 template<typename ElemType>
 inline LNode<ElemType>* LinkList<ElemType>::Prior(int i)
 {
-	if (i < 1 || i > m_cap + 1) {
+	if (i < 1 || i > m_len + 1) {
 		return NULL;
 	}
 
@@ -136,7 +138,7 @@ inline LNode<ElemType>* LinkList<ElemType>::Prior(int i)
 template<typename ElemType>
 inline LNode<ElemType>* LinkList<ElemType>::Find(int i)
 {
-	if (i < 1 || i > m_cap) {
+	if (i < 1 || i > m_len) {
 		return NULL;
 	}
 

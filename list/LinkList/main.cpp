@@ -6,6 +6,8 @@ using namespace std;
 int main() {
 	LinkList<int>* lst = new LinkList<int>();
 
+	assert(lst->Empty());
+
 	for (int i = 130; i >= 101; i--) {
 		assert(lst->Insert(1, i));
 	}
