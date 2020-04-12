@@ -4,6 +4,15 @@
 #include <queue>
 using namespace std;
 
+/*
+ * 树节点
+ *
+ * 成员变量
+ *  val ：树节点保存的信息值
+ *	lchild ：指向树节点左孩子节点的指针
+ *  rchild ：指向树节点右孩子节点的指针
+ *  parent ：指向树节点双亲节点的指针
+ */
 template<typename ElemType>
 struct BTNode
 {
@@ -14,11 +23,12 @@ struct BTNode
 };
 
 /*
- * 二叉树(二叉搜索树)
+ * 二叉树(二叉搜索树)，左子树“小于”根节点，右子树“大于”根节点，不允许存在相同信息的节点
  *
- * 1、ElemType 二叉树存储的数据类型
- * 2、Compare: 元素 ElemType 的比较函数，
- *			函数原型为：size_t (*Compare)(ElemType v, ElemType w)
+ * 模板类型
+ *  ElemType 二叉树存储的数据类型
+ *  Compare: 元素 ElemType 的比较函数，
+ *			函数原型为：int (*Compare)(ElemType v, ElemType w)
  *			返回值类型：
  *					(1)当 v > w 时返回 >0
  *					(2)当 v = w 时返回 =0
@@ -39,12 +49,12 @@ public:
 	void PostOrder(void (*visit)(const ElemType& _Val));
 	void LevelOrder(void (*visit)(const ElemType& _Val));
 
-	ElemType Minimum() const;
-	ElemType Maximum() const;
+	ElemType Minimum();
+	ElemType Maximum();
 
 	size_t Size() const;
 	size_t Depth() const;
-	size_t Empty() const;
+	bool Empty() const;
 
 private:
 	void destroy(BTNode<ElemType>* T);
@@ -64,7 +74,7 @@ private:
  * 参数
  *  cmp ：为元素 ElemType 的比较函数的指针
  *        函数原型为：size_t (*Compare)(ElemType v, ElemType w)
- *	      cmp 返回值要求：
+ *	      Compare 返回值要求：
  *					(1)当 v > w 时返回 >0
  *					(2)当 v = w 时返回 =0
  *					(3)当 v < w 时返回 <0
@@ -83,7 +93,7 @@ inline BTree<ElemType, Compare>::BTree(Compare cmp)
 template<typename ElemType, typename Compare>
 BTree<ElemType, Compare>::~BTree()
 {
-	Destroy(m_root);
+	destroy(m_root);
 }
 
 /*
@@ -102,22 +112,24 @@ bool BTree<ElemType, Compare>::Insert(const ElemType& _Val)
 	BTNode<ElemType>* p = NULL;
 	BTNode<ElemType>* q = NULL;
 	BTNode<ElemType>* node = NULL;
+	int n = 0;
 
-	// Find node's parent
-	// Left child is less to parent
-	// Right child is greater than or equal to parent
+	// 查找到插入节点的叶子位置
 	p = m_root;
 	while (p) {
 		q = p;
-		if (m_cmp(p->val, _Val) < 0) {
+		n = m_cmp(_Val, p->val);
+		if (n < 0) {
 			p = p->lchild;
 		}
-		else {
+		else if (n > 0) {
 			p = p->rchild;
+		}
+		else {
+			return false;
 		}
 	}
 
-	// Insert the node into the leaf node
 	node = new BTNode<ElemType>();
 	node->lchild = NULL;
 	node->rchild = NULL;
@@ -125,9 +137,9 @@ bool BTree<ElemType, Compare>::Insert(const ElemType& _Val)
 	node->parent = q;
 
 	if (q == NULL) {
-		m_root = p; // tree was empty
+		m_root = node; // 树为空
 	}
-	else if (node->val < q->val) {
+	else if (n < 0) {
 		q->lchild = node;
 	}
 	else {
@@ -135,6 +147,7 @@ bool BTree<ElemType, Compare>::Insert(const ElemType& _Val)
 	}
 
 	++m_size;
+	return true;
 }
 
 /*
@@ -154,7 +167,7 @@ bool BTree<ElemType, Compare>::Delete(const ElemType& _Val)
 	BTNode<ElemType>* q = NULL;
 
 	// Search the node 
-	p = Search(_Val);
+	p = search(_Val);
 	if (!p) {
 		return false;
 	}
@@ -181,7 +194,7 @@ bool BTree<ElemType, Compare>::Delete(const ElemType& _Val)
 				m_root = p->rchild;
 			}
 			else {
-				q = Minimum(p->rchild);
+				q = minimum(p->rchild);
 
 				q->parent->lchild = q->rchild;
 				if (q->rchild) {
@@ -230,7 +243,7 @@ bool BTree<ElemType, Compare>::Delete(const ElemType& _Val)
 				p->rchild->parent = p->parent;
 			}
 			else {
-				q = Minimum(p->rchild);
+				q = minimum(p->rchild);
 
 				q->parent->lchild = q->rchild;
 				if (q->rchild) {
@@ -380,7 +393,7 @@ inline void BTree<ElemType, Compare>::LevelOrder(void(*visit)(const ElemType& _V
  *             如果树为空，则中断运行（获取最小值前，先调用 Empty() 方法判断树是否为空）
  */
 template<typename ElemType, typename Compare>
-inline ElemType BTree<ElemType, Compare>::Minimum() const
+inline ElemType BTree<ElemType, Compare>::Minimum()
 {
 	BTNode<ElemType>* p = minimum(m_root);
 	if (!p) {
@@ -398,7 +411,7 @@ inline ElemType BTree<ElemType, Compare>::Minimum() const
  *             如果树为空，则中断运行（获取最大值前，先调用 Empty() 方法判断树是否为空）
  */
 template<typename ElemType, typename Compare>
-inline ElemType BTree<ElemType, Compare>::Maximum() const
+inline ElemType BTree<ElemType, Compare>::Maximum()
 {
 	BTNode<ElemType>* p = maximun(m_root);
 	if (!p) {
@@ -448,6 +461,8 @@ size_t BTree<ElemType, Compare>::Depth() const
 			}
 		}
 	}
+
+	return level;
 }
 
 /*
@@ -458,7 +473,7 @@ size_t BTree<ElemType, Compare>::Depth() const
  *         树不为空，返回 false
  */
 template<typename ElemType, typename Compare>
-inline size_t BTree<ElemType, Compare>::Empty() const
+inline bool BTree<ElemType, Compare>::Empty() const
 {
 	return m_size == 0 ? true : false;
 }
@@ -494,10 +509,10 @@ template<typename ElemType, typename Compare>
 BTNode<ElemType>* BTree<ElemType, Compare>::search(const ElemType& _Val)
 {
 	BTNode<ElemType>* p = m_root;
-	size_t n = 0;
+	int n = 0;
 
 	while (p) {
-		n = m_cmp(p->val, _Val);
+		n = m_cmp(_Val, p->val);
 		if (n == 0) {
 			break;
 		}
