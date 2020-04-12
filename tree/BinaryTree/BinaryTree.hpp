@@ -39,28 +39,30 @@ class BTree
 {
 public:
 	BTree(Compare cmp);
-	~BTree();
+	virtual ~BTree();
 
-	bool Insert(const ElemType& _Val);
-	bool Delete(const ElemType& _Val);
+	virtual bool Insert(const ElemType& _Val);
+	virtual bool Delete(const ElemType& _Val);
 
-	void PreOrder(void (*visit)(const ElemType& _Val));
-	void InOrder(void (*visit)(const ElemType& _Val));
-	void PostOrder(void (*visit)(const ElemType& _Val));
-	void LevelOrder(void (*visit)(const ElemType& _Val));
+	virtual void PreOrder(void (*visit)(const ElemType& _Val));
+	virtual void InOrder(void (*visit)(const ElemType& _Val));
+	virtual void PostOrder(void (*visit)(const ElemType& _Val));
+	virtual void LevelOrder(void (*visit)(const ElemType& _Val));
 
-	ElemType Minimum();
-	ElemType Maximum();
+	virtual ElemType Minimum();
+	virtual ElemType Maximum();
 
-	size_t Size() const;
-	size_t Depth() const;
-	bool Empty() const;
+	virtual size_t Size() const;
+	virtual size_t Depth() const;
+	virtual bool Empty() const;
 
 private:
 	void destroy(BTNode<ElemType>* T);
 	BTNode<ElemType>* search(const ElemType& _Val);
 	BTNode<ElemType>* minimum(BTNode<ElemType>* T);
 	BTNode<ElemType>* maximun(BTNode<ElemType>* T);
+
+	void Transplant(BTNode<ElemType>* p, BTNode<ElemType>* q);
 
 private:
 	BTNode<ElemType>* m_root;
@@ -172,97 +174,22 @@ bool BTree<ElemType, Compare>::Delete(const ElemType& _Val)
 		return false;
 	}
 
-	if (p == m_root) {
-		// no left child
-		if (!p->lchild) {
-			if (p->rchild) {
-				p->rchild->parent = NULL;
-			}
-			m_root = p->rchild;
-		}
-		// only left child
-		else if (p->lchild && !p->rchild) {
-			p->lchild->parent = NULL;
-			m_root = p->lchild;
-		}
-		// two child
-		else {
-			if (!p->rchild->lchild) {
-				p->rchild->lchild = p->lchild;
-				p->rchild->parent = NULL;
-				p->lchild->parent = p->rchild;
-				m_root = p->rchild;
-			}
-			else {
-				q = minimum(p->rchild);
-
-				q->parent->lchild = q->rchild;
-				if (q->rchild) {
-					q->rchild->parent = q->parent;
-				}
-
-				q->lchild = p->lchild;
-				q->rchild = p->rchild;
-				q->parent = NULL;
-				p->lchild->parent = q;
-				p->rchild->parent = q;
-				m_root = q;
-			}
-		}
+	if (!p->lchild) {
+		Transplant(p, p->rchild);
+	}
+	else if (!p->rchild) {
+		Transplant(p, p->lchild);
 	}
 	else {
-		// no left child
-		if (!p->lchild) {
-			if (p == p->parent->lchild) {
-				p->parent->lchild = p->rchild;
-			}
-			else {
-				p->parent->rchild = p->rchild;
-			}
-
-			if (p->rchild) {
-				p->rchild->parent = p->parent;
-			}
+		q = minimum(p->rchild);
+		if (q->parent != p) {
+			Transplant(q, q->rchild);
+			q->rchild = p->rchild;
+			q->rchild->parent = q;
 		}
-		// only left child
-		else if (p->lchild && !p->rchild) {
-			if (p == p->parent->lchild) {
-				p->parent->lchild = p->lchild;
-			}
-			else {
-				p->parent->rchild = p->lchild;
-			}
-
-			p->lchild->parent = p->parent;
-		}
-		// two child
-		else {
-			if (!p->rchild->lchild) {
-				p->lchild->parent = p->rchild;
-				p->rchild->lchild = p->lchild;
-				p->rchild->parent = p->parent;
-			}
-			else {
-				q = minimum(p->rchild);
-
-				q->parent->lchild = q->rchild;
-				if (q->rchild) {
-					q->rchild->parent = q->parent;
-				}
-
-				q->lchild = p->lchild;
-				q->rchild = p->rchild;
-				q->parent = p->parent;
-				if (p == p->parent->lchild) {
-					p->parent->lchild = q;
-				}
-				else {
-					p->parent->rchild = q;
-				}
-				p->lchild->parent = q;
-				p->rchild->parent = q;
-			}
-		}
+		Transplant(p, q);
+		q->lchild = p->lchild;
+		p->lchild->parent = q;
 	}
 
 	delete p;
@@ -557,4 +484,29 @@ BTNode<ElemType>* BTree<ElemType, Compare>::maximun(BTNode<ElemType>* T)
 	}
 
 	return p;
+}
+
+/*
+ * 进行对子树的移动，使用子树 told 替换子树 told
+ *
+ * 参数
+ *  told ：被替换的子树
+ *  tnew ：替换的子树
+ */
+template<typename ElemType, typename Compare>
+inline void BTree<ElemType, Compare>::Transplant(BTNode<ElemType>* told, BTNode<ElemType>* tnew)
+{
+	if (told->parent == NULL) {
+		m_root = tnew;
+	}
+	else if (told == told->parent->lchild) {
+		told->parent->lchild = tnew;
+	}
+	else {
+		told->parent->rchild = tnew;
+	}
+
+	if (tnew != NULL) {
+		tnew->parent = told->parent;
+	}
 }
