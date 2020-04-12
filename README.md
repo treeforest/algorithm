@@ -15,6 +15,7 @@
 2. LinkQueue: 链队列
 
 ## 四、树（tree）
+1. BinaryTree: 二叉树(二叉搜索树)
 
 ## 五、图论（Graph）
 1. AdjacencyMatrix: 图的邻接矩阵存储(模板实现)
