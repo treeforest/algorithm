@@ -21,13 +21,13 @@ private:
 
 public:
 	SSTable(size_t initlen = DEFAULTSIZE) {
-		elem = new __elem_type[initlen]();
+		elem = new __elem_type[initlen + 1]();
 		if (!elem) throw "new failed.";
 		m_len = initlen;
 	}
 
 	~SSTable() {
-		if (elem) delete elem;
+		if (elem) delete[] elem;
 	}
 
 	size_t Len() const { return m_len; };
@@ -50,7 +50,7 @@ public:
 	 *
 	 * 参数
 	 *  _key ：查找的key值
-	 *  equal ：比较值是否相等的函数指针
+	 *  compare ：比较值是否相等的函数指针
 	 */
 	int search_seq(__elem_key _key, bool (*equal)(__elem_key v, __elem_key w)) {
 		int i = 0;
