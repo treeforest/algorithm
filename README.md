@@ -1,7 +1,7 @@
 # 算法
 
 ## 一、链表（list）
-1. SqList: 顺序表
+1. SeqList: 顺序表
 2. LinkList: 单链表
 3. StaticLinkList: 静态链表
 4. DoubleLinkList: 双向链表 
