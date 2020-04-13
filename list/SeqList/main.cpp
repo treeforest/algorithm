@@ -1,4 +1,4 @@
-#include "SqList.hpp"
+#include "SeqList.hpp"
 #include <assert.h>
 #include <iostream>
 using namespace std;
@@ -12,7 +12,7 @@ bool Compare(ElemType e1, ElemType e2) {
 }
 
 int main() {
-	SqList<ElemType>* lst = new SqList<ElemType>();
+	SeqList<ElemType>* lst = new SeqList<ElemType>();
 	assert(lst);
 
 	assert(lst->Empty());
