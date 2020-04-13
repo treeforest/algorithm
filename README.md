@@ -28,3 +28,7 @@
 7. Dijkstra: 求解单源最短路径
 8. Floyd: 求各顶点之间最短路径
 9. TopologicalSort: 拓扑排序
+
+## 六、查找（search）
+1. SeqSearch: 顺序查找
+2. BinarySearch: 折半查找
