@@ -16,6 +16,7 @@
 
 ## 四、树（tree）
 1. BinaryTree: 二叉树(二叉搜索树)
+2. RBTree: 红黑树(实现有序集合 K-V 的存储)
 
 ## 五、图论（Graph）
 1. AdjacencyMatrix: 图的邻接矩阵存储(模板实现)
