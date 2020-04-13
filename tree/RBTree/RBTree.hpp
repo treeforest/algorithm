@@ -859,7 +859,7 @@ inline void RBTree<Key, Value, Compare>::delete_fixup(RBNode<Key, Value>* T)
 }
 
 /*
- * 进行对子树的移动，使用子树 told 替换子树 told
+ * 进行对子树的移动，使用子树 told 替换子树 tnew
  *
  * 参数
  *  told ：被替换的子树
