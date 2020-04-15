@@ -40,3 +40,6 @@
 > 3. TwoWayInsertSort: 2-路插入排序
 > 4. ShellSort: 希尔排序（缩小增量排序）
 > 5. TableInsertSort: 表插入排序
+> 
+> 交换排序
+> 1. BubbleSort: 冒泡排序
