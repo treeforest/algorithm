@@ -33,7 +33,7 @@
 > 1. SeqSearch: 顺序查找
 > 2. BinarySearch: 折半查找
 
-## 七、排序(sort)
+## 七、排序（sort）
 > 插入排序
 > 1. InsertSort: 直接插入排序
 > 2. BinaryInsertSort: 折半插入排序
