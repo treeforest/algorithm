@@ -6,33 +6,34 @@ VexType g_szVex[6] = { "V1", "V2", "V3", "V4", "V5", "V6" };
 CGraph g_Graph;
 
 void InitGraph();
-void Test(VexType v1, VexType v2);
+void Test(VexType v);
 
 int main() {
 	InitGraph();
 
-	Test(g_szVex[0], g_szVex[5]);
-	Test(g_szVex[5], g_szVex[1]);
-	Test(g_szVex[3], g_szVex[4]);
+	Test(g_szVex[0]);
+	Test(g_szVex[5]);
+	Test(g_szVex[3]);
 
 	return 0;
 }
 
-void Test(VexType v1, VexType v2) {
-	Path* path = g_Graph.MSTPrim(v1, v2);
-	if (path == NULL) {
-		cout << "没有找到对应的路径" << endl;
+void Test(VexType v) {
+	int sum = 0;
+
+	LowCost* lc = g_Graph.MSTPrim(v, sum);
+	if (lc == NULL) {
+		cout << "没有找到对应的最小生成树" << endl;
 		return;
 	}
 
-	cout << "顶点 " << v1 << "->" << v2 << " 的依次经历的顶点为：" << endl;
-	int cnt = 0;
-	while (path != NULL) {
-		cout << "顶点序号：" << path->i << "\t顶点：" << path->v << "\t权值：" << path->weight << endl;
-		cnt = cnt + path->weight;
-		path = path->next;
+	cout << "以顶点 " << v << " 为根结点的最小生成树：\ni : 前驱结点序号\nj : 当前结点序号\nweight ：i 到 j 的权值\n";
+	int n = g_Graph.GetVexNum();
+	for (int i = 0; i < n; i++) {
+		cout << "i = " << lc[i].i << ", j = " << lc[i].j << ", weight = " << lc[i].weight << endl;
 	}
-	cout << "路径总开销为： " << cnt << endl << endl;
+
+	cout << "权值总和为： " << sum << endl << endl;
 }
 
 void InitGraph() {

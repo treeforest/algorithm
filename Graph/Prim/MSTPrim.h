@@ -19,43 +19,45 @@ BOOL f(VexType v1, VexType v2) {
 	return FALSE;
 }
 
-// 到达顶点v的最小代价
+/*
+ * 顶点之间最小代价结构体
+ *
+ * 成员变量
+ *  i, j ：i 为上一个顶点的索引，j 为当前顶点的索引
+ *  weight ：i 到 j 对应边的权值
+ */
 struct LowCost {
-	// 最小权值的边(from, to). 
-	// j 为上一个顶点的索引，j 为当前顶点的索引
 	int i, j;
-
-	// i 到 j 对应边的权值
 	int weight; 
 };
 
-// 保存路径的结构体
-struct Path {
-	int i;
-	VexType v;
-	int weight;
-	struct Path* next;
-};
-
-
-// 图类
+/*
+ * 继承与邻接矩阵的图类
+ */
 class CGraph :public MGraph<VexType, VexInfo, EdgeInfo, FuncType>
 {
 public:
 	CGraph():MGraph(f, UDG) {}
 	~CGraph() {}
 
-	// 适用于带权无向图 UDG
-	Path* MSTPrim(VexType vex, VexType vexEnd);
+	LowCost* MSTPrim(VexType v, int& sum);
 };
 
-
-Path* CGraph::MSTPrim(VexType vexBegin, VexType vexEnd)
+/*
+ * Prim 求最小生成树算法（适用于带权无向图 UDG）
+ *
+ * 参数
+ *  v ：作为最小生成树的根节点的顶点
+ *  sum ：最小生成树中所有权值的和
+ *
+ * 返回值
+ *  LowCost ：最小生成树
+ */
+LowCost* CGraph::MSTPrim(VexType v, int& sum)
 {
 	int i = 0, j = 0;
 	int vexnum = GetVexNum();
-	int nBeginVexIndex = LocateVex(vexBegin);
-	int nEndVexIndex = LocateVex(vexEnd);
+	int nVexIndex = LocateVex(v);
 	int nMinArcWeight = 0;
 	int nMinVexIndex = 0;
 	BOOL* szVexSet = NULL;// 顶点是否被访问。true：已经被访问；false：未被访问
@@ -63,8 +65,9 @@ Path* CGraph::MSTPrim(VexType vexBegin, VexType vexEnd)
 	LowCost lc;
 	EdgeInfo weight;// 边信息
 	BOOL bRet = FALSE;
+	sum = 0;
 	
-	if (nBeginVexIndex < 0 || nBeginVexIndex >= vexnum || nEndVexIndex < 0 ||nEndVexIndex >= vexnum) {
+	if (nVexIndex < 0 || nVexIndex >= vexnum) {
 		return NULL;
 	}
 
@@ -75,13 +78,13 @@ Path* CGraph::MSTPrim(VexType vexBegin, VexType vexEnd)
 	for (i = 0; i < vexnum; ++i) {
 		memset(&lc, 0, sizeof(LowCost));
 
-		lc.i = nBeginVexIndex;
+		lc.i = nVexIndex;
 		lc.j = i;
-		if (i == nBeginVexIndex) {
+		if (i == nVexIndex) {
 			lc.weight = 0;
 		}
 		else {
-			bRet = GetEdgeByIndex(nBeginVexIndex, i, weight);
+			bRet = GetEdgeByIndex(nVexIndex, i, weight);
 			if (bRet == FALSE) {
 				lc.weight = INFINITY_DISTANCE;
 			}
@@ -94,7 +97,7 @@ Path* CGraph::MSTPrim(VexType vexBegin, VexType vexEnd)
 		szLowcost[i] = lc;
 	}
 
-	szVexSet[nBeginVexIndex] = TRUE;
+	szVexSet[nVexIndex] = TRUE;
 
 	// 找出最小边
 	for (i = 0; i < vexnum - 1; ++i) {
@@ -110,12 +113,8 @@ Path* CGraph::MSTPrim(VexType vexBegin, VexType vexEnd)
 
 		// 记录 min_vex 为已访问状态
 		szVexSet[nMinVexIndex] = TRUE;
+		sum = sum + nMinArcWeight;
 
-		// 已找到目标顶点
-		if (nMinVexIndex == nEndVexIndex) {
-			break;
-		}
-		
 		// 更新 min_vex 到其他未访问顶点的最小路径开销
 		for (j = 0; j < vexnum; ++j) {
 
@@ -140,51 +139,9 @@ Path* CGraph::MSTPrim(VexType vexBegin, VexType vexEnd)
 		}
 	}
 
-	// 记录最短距离路径
-	Path* p = NULL;
-	Path* path = NULL;
-	i = nEndVexIndex;
-	j = 0;
-
-	path = new Path;
-	path->i = i;
-	path->v = GetVexVal(i);
-	path->weight = szLowcost[i].weight;
-	path->next = p;
-	p = path;
-
-	while (i != nBeginVexIndex && j < vexnum) {
-		i = szLowcost[i].i;
-		j++;
-
-		path = new Path;
-		path->i = i;
-		path->v = GetVexVal(i);
-		if (i == nBeginVexIndex) {
-			path->weight = 0;
-		}
-		else {
-			path->weight = szLowcost[i].weight;
-		}
-		path->next = p;
-		p = path;
-	}
-
-	delete[] szLowcost;
 	delete[] szVexSet;
 
-	// 两个顶点之间没有路径
-	if (i != nBeginVexIndex) {
-		while (p != NULL) {
-			path = p;
-			p->next;
-			delete path;
-		}
-
-		return NULL;
-	}
-
-	return p;
+	return szLowcost;
 }
 
 #endif // !__PRIM_H__
