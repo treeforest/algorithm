@@ -15,31 +15,56 @@ BOOL f(VexType V1, VexType V2) {
 	return FALSE;
 }
 
-// 保存最短路径信息的结构体
+/*
+ * 保存路径信息的结构体
+ *
+ * 成员变量
+ *  i ：当前节点的前驱节点
+ *  dist ：最短路径长度
+ */
 struct Dist {
-	int i; // 当前节点的前驱节点
-	int dist; // 最短路径长度
+	int i;
+	int dist;
 };
 
-// 
+/*
+ * 最短路径结点
+ *
+ * 成员变量
+ *  i ：当前节点
+ *  dist ：最短路径
+ *  next ：下一条边
+ */
 struct PathNode {
-	int i; // 当前节点
-	int dist; // 最短路径
-	struct PathNode* next; // 下一条边
+	int i;
+	int dist;
+	struct PathNode* next;
 };
 typedef PathNode* Path;
 
+/*
+ * 继承于邻接矩阵的图类
+ */
 class CGraph : public MGraph < VexType, VexInfo, EdgeInfo, FuncType >
 {
 public:
 	CGraph() :MGraph(f, DG) {}
 	~CGraph() {}
 
-	// Floyd 求解各顶点之间的最短路径问题
 	Dist** Floyd();
 	Path FloydPath(VexType V1, VexType V2);
 };
 
+/*
+ * 通过 Floyd 算法求解两个顶点之间的最短路径
+ *
+ * 参数
+ *  V1 ：源顶点
+ *  V2 ：目的顶点
+ *
+ * 返回值
+ *  Path ：如果存在 V1 到 V2 的路径，则返回对应的路径信息；如果不存在对应路径，则返回 NULL 
+ */
 Path CGraph::FloydPath(VexType V1, VexType V2)
 {
 	int vexnum = GetVexNum();
@@ -80,7 +105,12 @@ Path CGraph::FloydPath(VexType V1, VexType V2)
 	return path;
 }
 
-
+/*
+ * Floyd 求解各顶点之间的最短路径问题
+ *
+ * 返回值
+ *  Dist** ：返回保存各顶点之间的最短路径的二维数组的指针
+ */
 Dist** CGraph::Floyd()
 {
 	EdgeInfo weight;
