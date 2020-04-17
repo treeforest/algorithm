@@ -15,13 +15,23 @@ BOOL f(VexType V1, VexType V2) {
 	return FALSE;
 }
 
-// 保存最短路径信息的结构体
+/*
+ * 保存最短路径信息的结构体
+ *
+ * 成员变量
+ *  i ：当前节点索引值
+ *  dist ：目标顶点到 j 的最短距离（权值和）
+ *  next ：指向路径的下一个结点的指针
+ */
 struct Path {
-	int i; // 当前节点索引值
-	int dist; // 目标顶点到 j 的最短距离（权值和）
+	int i;
+	int dist;
 	struct Path* next;
 };
 
+/*
+ * 继承与邻接表的图类
+ */
 class CGraph : public ALGraph<VexType, VexInfo, EdgeInfo, FuncType>
 {
 public:
@@ -31,6 +41,16 @@ public:
 	Path* Dijkstra(VexType V1, VexType V2);
 };
 
+/*
+ * Dijkstra 最短路径算法
+ *
+ * 参数
+ *  V1 ：源顶点
+ *  V2 ：目的顶点
+ *
+ * 返回值
+ *  Path* ：若存在 V1 到 V2 的路径，则返回对应的路径指针；否则，返回 NULL
+ */
 Path* CGraph::Dijkstra(VexType V1, VexType V2) {
 	bool* szState = NULL; // 标记顶点是否被访问
 	int* szPre = NULL; // 保存最短路径中，当前顶点的前驱节点信息
