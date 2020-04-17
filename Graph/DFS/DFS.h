@@ -13,32 +13,40 @@ BOOL f(VexType v1, VexType v2) {
 	return FALSE;
 }
 
-// 函数指针
+/*
+ * 遍历元素的函数指针
+ *
+ * 参数
+ *  index ：结点的索引
+ *  v ：节点值
+ */
 typedef void(*VisitProc)(int i, VexType vex);
 void DefaultVisitProc(int i, VexType vex) {
 	cout << i << " " << vex << endl;
 }
 
+/*
+ * 继承于邻接表的图类
+ */
 class CGraph :public ALGraph<VexType, VexInfo, EdgeInfo, FuncType>
 {
 public:
 	CGraph(GraphKind kind = DG):ALGraph(f, kind) {}
-
 	~CGraph() {}
 
-	// 深度优先搜索
 	void DFSTraverse(VisitProc visit = DefaultVisitProc);
 
 private:
 	void DFS(int i, VisitProc visit);
-
 	void Clear();
 
 private:
-	// 访问标记数组
-	bool m_visited[MAX_VERTEX_NUM];
+	bool m_visited[MAX_VERTEX_NUM];// 访问标记数组
 };                                                                            
 
+/*
+ * 图的深度优先搜索
+ */
 void CGraph::DFSTraverse(VisitProc visit)
 {
 	Clear();
