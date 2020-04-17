@@ -7,17 +7,19 @@ using namespace std;
 
 #define MAX_VERTEX_NUM 64
 
+/*
+ * 图的种类类型
+ *
+ * 类型
+ *  DG ：有向图（带权值）
+ *  DN ：有向网
+ *  UDG ：无向图（带权值）
+ *  UDN ：无向网
+ */
 enum GraphKind {
-	// 有向图（带权值）
 	DG,
-
-	// 有向网
 	DN,
-
-	// 无向图（带权值）
 	UDG,
-
-	// 无向网
 	UDN,
 };
 
@@ -33,46 +35,45 @@ typedef int BOOL;
 
 /*
  * 边表节点
-*/
+ *
+ * 成员变量
+ *  info ：该边相关的信息
+ *  exist ：该边是否存在 info 记录。EXIST：说明存在info信息；NOTEXIST说明不存在info信息
+ */
 template<typename EdgeInfo>
 struct EdgeNode
 {
-	// 该边存在 exist = EXIST; 不存在则 exist = NOTEXIST
-	// 若图为 DG/UDG,则在边存在的情况下，info不为空。反之为 DN/UDN 不存在权值
 	unsigned int exist : 1;
-
-	// 该边的相关信息
 	EdgeInfo info;
 };
 
 /*
  * 顶点节点
+ *
+ * 成员变量
+ *  val ：顶点值
+ *  info ：顶点信息
+ *  valid ：该边是否存在 info 记录。VALID：说明存在info信息；INVALID说明不存在info信息
  */
 template<typename VertexType, typename VertexInfo>
 struct VNode
 {
-	// 顶点值
 	VertexType val;
-
-	// 顶点信息
 	VertexInfo info;
-
-	// info 有记录时 valid = VALID; 没记录 valid = INVALID
 	unsigned int valid : 1;
 };
 
-//
-// CompareFunc 书写格式
-//
-// typedef char VexType;
-// typedef BOOL(*CompareFuncType)(VexType v1, VexType v2);
-// BOOL DefaultCompare(VexType v1, VexType v2) {
-// 	if (v1 == v2) {
-// 		return TRUE;
-// 	}
-// 	return FALSE;
-// }
-
+/*
+ * 邻接矩阵存储结构
+ *
+ * 模板参数
+ *  VertexType ：顶点值类型
+ *  VertexInfo ：顶点信息类型
+ *  EdgeInfo ：边信息类型
+ *  CompareFunc: 比较顶点值的函数指针
+ *               函数格式： BOOL FunctionName(VertexType v, VertexType w);
+ *               要求：顶点值v、w相同返回TRUE，否则返回FALSE
+ */
 template<typename VertexType, typename VertexInfo, typename EdgeInfo, typename CompareFunc>
 class MGraph
 {
@@ -80,66 +81,46 @@ public:
 	MGraph(CompareFunc func, GraphKind typ = UDG);
 	virtual ~MGraph();
 
-	// 在图G中插入顶点, 返回当前顶点的索引号
-	virtual int InsertVex(const VertexType v);
+	virtual int InsertVex(const VertexType& v);
 
-	// 设置顶点信息. 如果顶点不存在，则返回FALSE；否则记录顶点信息
-	// modify 字段: = TRUE,则当顶点信息存在时，就修改顶点信息；否则在顶点信息存在的情况下，直接返回 FALSE
-	virtual BOOL SetVex(const VertexType v, const VertexInfo info, BOOL modify = TRUE);
-	virtual BOOL SetVexByIndex(int i, const VertexInfo info, BOOL modify = TRUE);
+	virtual BOOL SetVex(const VertexType& v, const VertexInfo& info, BOOL modify = TRUE);
+	virtual BOOL SetVexByIndex(int i, const VertexInfo& info, BOOL modify = TRUE);
 	
-	// 获取顶点信息
-	virtual BOOL GetVex(const VertexType v, VertexInfo& info);
+	virtual BOOL GetVex(const VertexType& v, VertexInfo& info);
 	virtual BOOL GetVexByIndex(int i, VertexInfo& info);
 
-	// 在图G中删除顶点
-	virtual BOOL DeleteVex(const VertexType v);
+	virtual BOOL DeleteVex(const VertexType& v);
 	virtual BOOL DeleteVexByIndex(const int loc);
 
-	// 若无向边(x, y)或有向边<x, y>不存在，则向图G中添加该边。
-	// 如果 modify == true，则在存在 Edge 的情况下进行修改该边的弧信息；如果 modify 为 false，在边已经存在的请款下会返回 FALSE
-	virtual BOOL InsertEdge(VertexType v, VertexType w, EdgeInfo* pInfo = NULL, BOOL modify = TRUE);
+	virtual BOOL InsertEdge(const VertexType& v, const VertexType& w, EdgeInfo* pInfo = NULL, BOOL modify = TRUE);
 	virtual BOOL InsertEdgeByIndex(int i, int j, EdgeInfo* pInfo = NULL, BOOL modify = TRUE);
 
-	// 若无向边(x, y)或有向边<x, y>存在，则从图G中删除该边。若边不存在则返回 FALSE，设置成功返回 TRUE。
-	virtual BOOL DeleteEdge(VertexType v, VertexType w);
+	virtual BOOL DeleteEdge(const VertexType& v, const VertexType& w);
 	virtual BOOL DeleteEdgeByIndex(int i, int j);
 
-	// 设置图G中边(x, y)或<x, y>对应的权值 value。若边不存在则返回 FALSE，设置成功返回 TRUE。
-	virtual BOOL SetEdge(VertexType v, VertexType w, EdgeInfo* pInfo);
+	virtual BOOL SetEdge(const VertexType& v, const VertexType& w, EdgeInfo* pInfo);
 	virtual BOOL SetEdgeByIndex(int i, int j, EdgeInfo* pInfo);
 
-	// 获取图G中边(x, y)或<x, y>对应的权值。
-	virtual BOOL GetEdge(VertexType v, VertexType w, EdgeInfo& info);
+	virtual BOOL GetEdge(const VertexType& v, const VertexType& w, EdgeInfo& info);
 	virtual BOOL GetEdgeByIndex(int i, int j, EdgeInfo& info);
 
-	// 是否存在边（v, w）或 <v, w>
-	virtual BOOL ExistEdge(VertexType v, VertexType w);
+	virtual BOOL ExistEdge(const VertexType& v, const VertexType& w);
 	virtual BOOL ExistEdgeByIndex(int i, int j);
 
-	// 求图G中顶点 x 的第一个邻接点。若有，则返回顶点号；若 x 没有邻接点或不存在 x，则返回-1。
-	virtual int FirstAdjVex(VertexType v);
+	virtual int FirstAdjVex(const VertexType& v);
 	virtual int FirstAdjVexByIndex(int i);
 
-	// 假设图G中顶点 y 是顶点 x 的一个邻接点，返回除 y 之外顶点 x 的下一个邻接点的顶点号；若 y 是 x 的最后一个邻接点，则返回 -1。
-	virtual int NextAdjVex(VertexType v, VertexType w);
+	virtual int NextAdjVex(const VertexType& v, const VertexType& w);
 	virtual int NextAdjVexByIndex(int i, int j);
 
-	// 若图中存在顶点 value,则返回该顶点在图中位置；否则返回-1
-	virtual int LocateVex(const VertexType v);
+	virtual int LocateVex(const VertexType& v);
 
-	// 若图中存在顶点 value，则返回 TRUE，否则返回 FALSE
-	virtual BOOL ExistVex(const VertexType v);
+	virtual BOOL ExistVex(const VertexType& v);
 	virtual BOOL ExistVexByIndex(const int i);
 
-	// 获取索引为 i 的顶点信息
-	virtual VertexType GetVexVal(int i) const { return m_szVex[i].val; }
-
-	// 获取当前图的类型
-	virtual GraphKind GetGraphKind() const { return m_graphKind; }
-
-	// 获取当前顶点数量
-	virtual int GetVexNum() const { return m_vexnum; }
+	virtual VertexType GetVexVal(int i) const;
+	virtual GraphKind GetGraphKind() const;
+	virtual int GetVexNum() const;
 
 	// 打印测试
 	virtual void PrintInfo();
@@ -148,34 +129,26 @@ private:
 	// 屏蔽默认构造函数
 	MGraph() {}
 
-	// 无向图中边的偏移地址
-	virtual int EdgeOffsetLoc(VertexType v, VertexType w);
+	virtual int EdgeOffsetLoc(const VertexType& v, const VertexType& w);
 	virtual int EdgeOffsetLocByIndex(int i, int j);
 
 private:
-	// 顶点表
-	VNode<VertexType, VertexInfo> m_szVex[MAX_VERTEX_NUM];
-	
-	// 有向图邻接矩阵
-	EdgeNode<EdgeInfo>** m_pDArcs;
-
-	// 无向图,采用上三角压缩存储
-	EdgeNode<EdgeInfo>* m_pUDArcs;
-
-	// 图的当前顶点数
-	int m_vexnum;
-
-	// 图的弧数
-	int m_arcnum;
-
-	// 图类型，有向图 或 无向图
-	GraphKind m_graphKind;
-
-	// 顶点的比较函数
-	CompareFunc compare;
+	VNode<VertexType, VertexInfo> m_szVex[MAX_VERTEX_NUM];// 顶点表
+	EdgeNode<EdgeInfo>** m_pDArcs;// 有向图邻接矩阵 
+	EdgeNode<EdgeInfo>* m_pUDArcs;// 无向图,采用上三角压缩存储
+	int m_vexnum;// 图的当前顶点数
+	int m_arcnum;// 图的弧数
+	GraphKind m_graphKind;// 图类型，有向图 或 无向图
+	CompareFunc compare;// 顶点的比较函数
 };
 
-
+/*
+ * 构造函数
+ *
+ * 参数
+ *  func ：顶点值比较函数指针
+ *  kind ：图类型。默认为无向图 UDG
+ */
 template<typename VertexType, typename VertexInfo, typename EdgeInfo, typename CompareFunc>
 MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::MGraph(CompareFunc func, GraphKind kind)
 {
@@ -204,6 +177,9 @@ MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::MGraph(CompareFunc func, 
 	compare = func;
 }
 
+/*
+ * 析构函数
+ */
 template<typename VertexType, typename VertexInfo, typename EdgeInfo, typename CompareFunc>
 MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::~MGraph()
 {
@@ -218,8 +194,18 @@ MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::~MGraph()
 	}
 }
 
+/*
+ * 在图中插入一个顶点
+ *
+ * 参数
+ *  v ：插入的顶点值
+ *
+ * 返回值
+ *  int ：如果不存在该顶点值，则插入成功，并返回插入的下标
+ *        如果存在该顶点值，返回 -1
+ */
 template<typename VertexType, typename VertexInfo, typename EdgeInfo, typename CompareFunc>
-int MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::InsertVex(const VertexType v)
+int MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::InsertVex(const VertexType& v)
 {
 	int loc = -1;
 
@@ -246,14 +232,26 @@ int MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::InsertVex(const Verte
 	return loc;
 }
 
+/*
+ * 设置顶点的信息
+ *
+ * 参数
+ *  v ：顶点的值
+ *  info ：设置的顶点信息
+ *  modify ：如果为 TRUE，则当顶点信息存在时，依旧修改顶点信息；
+ *           如果为 FALSE，则顶点信息存在时，就不修改顶点信息
+ *
+ * 返回值
+ *  BOOL ：插入/更改值成功，返回TRUE；否则返回 FALSE
+ */
 template<typename VertexType, typename VertexInfo, typename EdgeInfo, typename CompareFunc>
-inline BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::SetVex(const VertexType v, const VertexInfo info, BOOL modify /*=TRUE*/)
+inline BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::SetVex(const VertexType& v, const VertexInfo& info, BOOL modify /*=TRUE*/)
 {
 	return SetVexByIndex(LocateVex(v), info, TRUE);
 }
 
 template<typename VertexType, typename VertexInfo, typename EdgeInfo, typename CompareFunc>
-inline BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::SetVexByIndex(int i, const VertexInfo info, BOOL modify /*=TRUE*/)
+inline BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::SetVexByIndex(int i, const VertexInfo& info, BOOL modify /*=TRUE*/)
 {
 	if (i < 0 || i >= m_vexnum) {
 		return FALSE;
@@ -269,8 +267,18 @@ inline BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::SetVexByIndex
 	return TRUE;
 }
 
+/*
+ * 获取图中某一顶点的顶点信息
+ *
+ * 参数
+ *  v ：顶点值
+ *  info ：获取的顶点信息。
+ *
+ * 返回值
+ *  BOOL ：如果存在顶点值 v 的顶点信息，则返回 TRUE；否则返回 FALSE
+ */
 template<typename VertexType, typename VertexInfo, typename EdgeInfo, typename CompareFunc>
-inline BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::GetVex(const VertexType v, VertexInfo& info)
+inline BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::GetVex(const VertexType& v, VertexInfo& info)
 {
 	return GetVexByIndex(LocateVex(v), info);
 }
@@ -291,8 +299,17 @@ inline BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::GetVexByIndex
 	return TRUE;
 }
 
+/*
+ * 在图中删除顶点值
+ *
+ * 参数
+ *  v ：删除的顶点的值
+ *
+ * 返回值
+ *  BOOL ：如果存在该顶点值 v，则删除成功，返回 TRUE；否则返回 FALSE
+ */
 template<typename VertexType, typename VertexInfo, typename EdgeInfo, typename CompareFunc>
-BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::DeleteVex(const VertexType v)
+BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::DeleteVex(const VertexType& v)
 {
 	return DeleteVexByIndex(LocateVex(v));
 }
@@ -440,8 +457,19 @@ inline BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::DeleteVexByIn
 	return TRUE;
 }
 
+/*
+ * 在图中插入一条边
+ *
+ * 参数
+ *  v，w ：插入边的两个顶点。如果是有向边，则该边为 <v, w>;如果为无向边，则该边为 (v, w)
+ *  pInfo ：插入的边的边信息指针
+ *  modify ：若为 TRUE，则在边存在的情况下修改该边的信息；若为 FALSE，则在边存在的情况下插入失败
+ *
+ * 返回值
+ *  BOOL ：边插入成功返回 TRUE；插入失败返回 FALSE
+ */
 template<typename VertexType, typename VertexInfo, typename EdgeInfo, typename CompareFunc>
-BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::InsertEdge(VertexType v, VertexType w, EdgeInfo* pInfo /*=NULL*/, BOOL modify)
+BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::InsertEdge(const VertexType& v, const VertexType& w, EdgeInfo* pInfo /*=NULL*/, BOOL modify)
 {
 	return InsertEdgeByIndex(LocateVex(v), LocateVex(w), pInfo, modify);
 }
@@ -488,8 +516,17 @@ inline BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::InsertEdgeByI
 	return TRUE;
 }
 
+/*
+ * 在图中删除边
+ *
+ * 参数
+ *  v，w ：删除的边的顶点值。若为无向图，则删除的边为(v, w)；若为有向边，则删除的边为<v, w>
+ *
+ * 返回值
+ *  BOOL ：删除成功返回TRUE；失败返回FALSE
+ */
 template<typename VertexType, typename VertexInfo, typename EdgeInfo, typename CompareFunc>
-BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::DeleteEdge(VertexType v, VertexType w)
+BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::DeleteEdge(const VertexType& v, const VertexType& w)
 {
 	return DeleteEdgeByIndex(LocateVex(v), LocateVex(w));
 }
@@ -527,8 +564,17 @@ inline BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::DeleteEdgeByI
 	return bRet;
 }
 
+/*
+ * 求顶点 v 的第一个邻接点的索引值
+ *
+ * 参数
+ *  v ：顶点值
+ *
+ * 返回值
+ *  int ：第一个邻接点的索引值；若不存在邻接点，则返回 -1
+ */
 template<typename VertexType, typename VertexInfo, typename EdgeInfo, typename CompareFunc>
-inline int MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::FirstAdjVex(VertexType v)
+inline int MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::FirstAdjVex(const VertexType& v)
 {
 	return FirstAdjVexByIndex(LocateVex(v));
 }
@@ -583,8 +629,18 @@ int MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::FirstAdjVexByIndex(in
 	return -1;
 }
 
+/*
+ * 求顶点 v 的邻接顶点 w 的下一个邻接顶点的索引
+ *
+ * 参数
+ *  v ：顶点值
+ *  w ：顶点值
+ *
+ * 返回值
+ *  int ：第一个邻接点的索引值；若不存在邻接点，则返回 -1
+ */
 template<typename VertexType, typename VertexInfo, typename EdgeInfo, typename CompareFunc>
-inline int MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::NextAdjVex(VertexType v, VertexType w)
+inline int MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::NextAdjVex(const VertexType& v, const VertexType& w)
 {
 	return NextAdjVexByIndex(LocateVex(v), LocateVex(w));
 }
@@ -637,8 +693,18 @@ int MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::NextAdjVexByIndex(int
 	return -1;
 }
 
+/*
+ * 获取边信息
+ *
+ * 参数
+ *  v, w ：边的两个顶点。若为无向边，则为(v, w);若为有向边，则为<v, w>
+ *  info ：接收获取的边信息
+ *
+ * 返回值
+ *  BOOL ：若存在边以及对应的边信息，则返回 TRUE；否则返回 FALSE
+ */
 template<typename VertexType, typename VertexInfo, typename EdgeInfo, typename CompareFunc>
-BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::GetEdge(VertexType v, VertexType w, EdgeInfo& info)
+BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::GetEdge(const VertexType& v, const VertexType& w, EdgeInfo& info)
 {
 	return GetEdgeByIndex(LocateVex(v), LocateVex(w), info);
 }
@@ -672,8 +738,18 @@ inline BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::GetEdgeByInde
 	return FALSE;
 }
 
+/*
+ * 设置边的信息
+ *
+ * 参数
+ *  v, w ：边的两个顶点。若为无向边，则为(v, w);若为有向边，则为<v, w>
+ *  pInfo ：边信息指针，若为NULL，则插入失败
+ *
+ * 返回值
+ *  BOOL ：插入成功，则返回TRUE；否则返回FALSE
+ */
 template<typename VertexType, typename VertexInfo, typename EdgeInfo, typename CompareFunc>
-BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::SetEdge(VertexType v, VertexType w, EdgeInfo* pInfo)
+BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::SetEdge(const VertexType& v, const VertexType& w, EdgeInfo* pInfo)
 {
 	return InsertEdgeByIndex(LocateVex(v), LocateVex(w), pInfo, TRUE);
 }
@@ -684,8 +760,17 @@ inline BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::SetEdgeByInde
 	return InsertEdgeByIndex(i, j, pInfo, TRUE);
 }
 
+/*
+ * 获取顶点的索引位置
+ *
+ * 参数
+ *  v ：顶点值
+ *
+ * 返回值
+ *  int ：若存在该顶点，则返回顶点所在的索引；若不存在，则返回 -1
+ */
 template<typename VertexType, typename VertexInfo, typename EdgeInfo, typename CompareFunc>
-int MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::LocateVex(const VertexType v)
+int MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::LocateVex(const VertexType& v)
 {
 	for (int i = 0; i < m_vexnum; ++i) {
 
@@ -697,8 +782,17 @@ int MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::LocateVex(const Verte
 	return -1;
 }
 
+/*
+ * 是否存在顶点
+ *
+ * 参数
+ *  v ：顶点值
+ *
+ * 返回值
+ *  BOOL ：若存在该顶点，则返回 TRUE；否则返回 FALSE
+ */
 template<typename VertexType, typename VertexInfo, typename EdgeInfo, typename CompareFunc>
-BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::ExistVex(const VertexType v)
+BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::ExistVex(const VertexType& v)
 {
 	return ExistVexByIndex(LocateVex(v));
 }
@@ -713,8 +807,47 @@ inline BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::ExistVexByInd
 	return TRUE;
 }
 
+/*
+ * 获取索引为 i 的顶点信息
+ */
 template<typename VertexType, typename VertexInfo, typename EdgeInfo, typename CompareFunc>
-inline BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::ExistEdge(VertexType v, VertexType w)
+inline VertexType MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::GetVexVal(int i) const
+{
+	if (i < 0 || i >= m_vexnum) {
+		throw "out of range";
+	}
+	return m_szVex[i].val;
+}
+
+/*
+ * 获取当前图的类型
+ */
+template<typename VertexType, typename VertexInfo, typename EdgeInfo, typename CompareFunc>
+inline GraphKind MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::GetGraphKind() const
+{
+	return m_graphKind;
+}
+
+/*
+ * 获取当前顶点数量
+ */
+template<typename VertexType, typename VertexInfo, typename EdgeInfo, typename CompareFunc>
+inline int MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::GetVexNum() const
+{
+	return m_vexnum;
+}
+
+/*
+ * 是否存在边
+ *
+ * 参数
+ *  v, w ：边的两个顶点。若为无向边，则为(v, w);若为有向边，则为<v, w>
+ *
+ * 返回值
+ *  BOOL ：如果存在边，则返回 TRUE；否则返回 FALSE
+ */
+template<typename VertexType, typename VertexInfo, typename EdgeInfo, typename CompareFunc>
+inline BOOL MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::ExistEdge(const VertexType& v, const VertexType& w)
 {
 	return ExistEdgeByIndex(LocateVex(v), LocateVex(w));
 }
@@ -872,8 +1005,11 @@ void MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::PrintInfo()
 	}
 }
 
+/*
+ * 无向图中边的偏移地址
+ */
 template<typename VertexType, typename VertexInfo, typename EdgeInfo, typename CompareFunc>
-inline int MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::EdgeOffsetLoc(VertexType v, VertexType w)
+inline int MGraph<VertexType, VertexInfo, EdgeInfo, CompareFunc>::EdgeOffsetLoc(const VertexType& v, const VertexType& w)
 {
 	return EdgeOffsetLocByIndex(LocateVex(v), LocateVex(w));
 }
