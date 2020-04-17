@@ -13,12 +13,21 @@ BOOL f(VexType V1, VexType V2) {
 	return FALSE;
 }
 
-// 函数指针
+/*
+ * 遍历元素的函数指针
+ *
+ * 参数
+ *  index ：结点的索引
+ *  v ：节点值
+ */
 typedef void(*VisitProc)(int i, VexType vex);
 void DefaultVisitProc(int i, VexType vex) {
 	cout << "顶点索引：" << i << "\t顶点：" << vex << endl;
 }
 
+/*
+ * 继承于邻接矩阵的图类
+ */
 class CGraph : public ALGraph < VexType, VexInfo, EdgeInfo, FuncType >
 {
 public:
@@ -28,6 +37,15 @@ public:
 	bool TopologicalSort(VisitProc visit);
 };
 
+/*
+ * 拓扑排序
+ *
+ * 参数
+ *  visit ：拓扑排序中访问结点的函数指针
+ *
+ * 返回值
+ *  bool ：如果该图能进行，返回 true；否则返回 false
+ */
 bool CGraph::TopologicalSort(VisitProc visit)
 {
 	int vexnum = GetVexNum();

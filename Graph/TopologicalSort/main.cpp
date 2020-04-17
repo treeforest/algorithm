@@ -13,7 +13,13 @@ int main() {
 }
 
 void Test() {
-	g_Graph.TopologicalSort(DefaultVisitProc);
+	bool b = g_Graph.TopologicalSort(DefaultVisitProc);
+	if (b) {
+		cout << "该图能进行拓扑排序, 即图是连通图";
+	}
+	else {
+		cout << "该图不能进行拓扑排序，即图是非连通图";
+	}
 }
 
 void InitGraph() {
