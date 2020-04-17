@@ -18,10 +18,14 @@ BOOL f(VexType v1, VexType v2) {
 	return FALSE;
 }
 
-
-// 函数指针
+/*
+ * 遍历元素的函数指针
+ *
+ * 参数
+ *  index ：结点的索引
+ *  v ：节点值
+ */
 typedef void(*VisitProc)(int index, VexType v);
-
 void DefaultVisitProc(int index, VexType v) {
 	cout << index << " " << v << endl;
 }
@@ -32,26 +36,16 @@ public:
 	CGraph(GraphKind kind = UDG);
 	~CGraph();
 
-	// 广度优先搜索
 	void BFSTraverse(VisitProc visit = DefaultVisitProc);
-
-	// BFS 求解单源最短路径(适用非带权图)
 	void BFSMinDistance(VexType vex);
 
 private:
-
-	// BFS
 	void BFS(int v, VisitProc visit);
-
-	// 清空数据
 	void Clear();
 
 private:
-	// 访问标记数组
-	bool m_visited[MAX_VERTEX_NUM];
-
-	// 辅助队列
-	queue<int> m_queue;
+	bool m_visited[MAX_VERTEX_NUM];// 访问标记数组
+	queue<int> m_queue;// 辅助队列
 };
 
 inline CGraph::CGraph(GraphKind kind /*= UDG*/) : MGraph(f, kind)
@@ -64,6 +58,9 @@ CGraph::~CGraph()
 
 }
 
+/*
+ * 广度优先遍历
+ */
 void CGraph::BFSTraverse(VisitProc visit /*= DefaultVisitProc*/)
 {
 	Clear();
@@ -80,6 +77,15 @@ void CGraph::BFSTraverse(VisitProc visit /*= DefaultVisitProc*/)
 	}
 }
 
+/*
+ * 使用 BFS 求解单源最短路径(适用非带权图)
+ *
+ * 参数
+ *  vex ：路径的开始顶点
+ *
+ * 其他
+ *  对求解的最短路径直接会在函数内进行打印输出
+ */
 void CGraph::BFSMinDistance(VexType vex)
 {
 	int vexnum = GetVexNum();
