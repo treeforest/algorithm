@@ -1,8 +1,5 @@
 #pragma once
 
-#include<iostream>
-using namespace std;;
-
 #define DEFAULTSIZE 32
 #define INCREASE 16
 
