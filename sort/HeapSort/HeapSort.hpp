@@ -1,8 +1,5 @@
 #pragma once
 
-#define DEFAULTSIZE 32
-#define INCREASE 16
-
 /*
  * 排序结点定义
  */
