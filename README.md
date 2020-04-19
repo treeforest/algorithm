@@ -13,6 +13,7 @@
 ## 三、队列（queue）
 > 1. SqQueue: 循环队列
 > 2. LinkQueue: 链队列
+> 3. PriorityQueue: 优先级队列
 
 ## 四、树（tree）
 > 1. BinaryTree: 二叉树(二叉搜索树)
