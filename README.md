@@ -52,3 +52,6 @@
 
 > 其他
 > 1. MergeSort: 归并排序
+
+## 八、其他（other）
+> FibHeap: 斐波那契堆
