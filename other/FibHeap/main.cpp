@@ -45,6 +45,6 @@ int main() {
 		}
 	}
 
-	cout << "It's OK." << endl;
+	cout << "\n\nIt's OK." << endl;
 	return 0;
 }

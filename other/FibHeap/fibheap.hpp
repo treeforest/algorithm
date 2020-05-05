@@ -1,7 +1,5 @@
 #pragma once
 #include <cstdlib>
-#include <iostream>
-using namespace std;
 
 /* 
  * 斐波那契堆结点定义
