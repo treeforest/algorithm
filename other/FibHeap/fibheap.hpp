@@ -37,7 +37,9 @@ struct FibHeapNode
  *
  * 成员变量
  *  m_min：斐波那契堆的最小结点（若堆为空，则为NULL）
- *  m_num：当前斐波那契堆中的结点个数
+ *  m_count：当前斐波那契堆中的结点个数
+ *  m_minKey：用户规定的最小的关键字的值
+ *  compare：关键字的比较函数指针
  */
 template<typename Key, typename Value, typename Compare>
 class FibHeap
@@ -57,7 +59,6 @@ protected:
 
 	void consolidate();
 	void heap_link(__fib_heap_node* y, __fib_heap_node* x);
-	void exchange(__fib_heap_node*y, __fib_heap_node* x);
 
 	void cut(__fib_heap_node* x, __fib_heap_node* y);
 	void cascading_cut(__fib_heap_node* y);
@@ -101,7 +102,7 @@ inline FibHeap<Key, Value, Compare>::~FibHeap()
  * 插入一个结点
  *
  * 参数
- *  _Key：插入结点的关键字
+ *  x：待插入的结点插入结点
  */
 template<typename Key, typename Value, typename Compare>
 inline void FibHeap<Key, Value, Compare>::Insert(FibHeapNode<Key, Value>* x)
@@ -131,6 +132,9 @@ inline void FibHeap<Key, Value, Compare>::Insert(FibHeapNode<Key, Value>* x)
 
 /*
  * 删除一个结点
+ *
+ * 参数
+ *  x：待删除的结点指针（该节点需要是已经在斐波那契堆中的数）
  */
 template<typename Key, typename Value, typename Compare>
 inline void FibHeap<Key, Value, Compare>::Delete(FibHeapNode<Key, Value>* x)
@@ -175,7 +179,7 @@ inline void FibHeap<Key, Value, Compare>::DecreaseKey(FibHeapNode<Key, Value>* x
  * 抽取最小结点
  *
  * 返回值
- *  FibHeapNode<Key>*：指向最小结点的指针；若斐波那契堆为空，则返回 NULL
+ *  FibHeapNode<Key>*：若斐波那契堆不为空，则返回指向最小结点的指针；若斐波那契堆为空，则返回 NULL
  */
 template<typename Key, typename Value, typename Compare>
 inline FibHeapNode<Key, Value>* FibHeap<Key, Value, Compare>::ExtractMin()
@@ -211,6 +215,14 @@ inline FibHeapNode<Key, Value>* FibHeap<Key, Value, Compare>::ExtractMin()
 			m_min = z->right;
 			consolidate();
 		}
+	}
+
+	// 切断 z 与其他结点的联系，以防止用户对其他节点进行修改而破坏斐波那契堆的性质
+	if (z) {
+		z->parent = NULL;
+		z->child = NULL;
+		z->left = NULL;
+		z->right = NULL;
 	}
 
 	return z;
@@ -304,14 +316,6 @@ inline void FibHeap<Key, Value, Compare>::heap_link(__fib_heap_node * y, __fib_h
 	y->parent = x;
 	y->mark = false;
 	x->degree++;
-}
-
-template<typename Key, typename Value, typename Compare>
-inline void FibHeap<Key, Value, Compare>::exchange(__fib_heap_node * y, __fib_heap_node * x)
-{
-	__fib_key tmp = y->key;
-	y->key = x->key;
-	x->key = tmp;
 }
 
 /*
