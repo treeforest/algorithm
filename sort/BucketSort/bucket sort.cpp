@@ -25,33 +25,37 @@ void BucketSort(double A[], int len) {
 		b->next = NULL;
 		j = (int)(A[i] * len);
 
-		if (!B[j]){
+		p = B[j];
+		if (!p){
 			B[j] = b;
+			continue;
 		}
-		else {
-			p = B[j];
-			if (b->val < p->val) {
-				b->next = p;
-				B[j] = b;
-			}
-			else {
-				while (p && b->val > p->val) {
-					q = p;
-					p = p->next;
-				}
-				q->next = b;
-				b->next = p;
-			}
+
+		if (b->val < p->val) {
+			b->next = p;
+			B[j] = b;
+			continue;
 		}
+
+		while (p && b->val > p->val) {
+			q = p;
+			p = p->next;
+		}
+		q->next = b;
+		b->next = p;
 	}
 
 	for (i = 0, j = 0; i < len && j < len; i++) {
 		p = B[i];
 		while (p){
 			A[j++] = p->val;
-			p = p->next;
+			q = p->next;
+			delete p;
+			p = q;
 		}
 	}
+
+	delete[] B;
 }
 
 int main() {
