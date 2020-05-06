@@ -13,16 +13,17 @@
  *  left：指向左兄弟的指针
  *  right：指向右兄弟的指针
  */
-template<typename Key>
+template<typename Key, typename Value>
 struct FibHeapNode 
 {
 	Key key;
+	Value val;
 	size_t degree;
 	bool mark;
-	FibHeapNode<Key>* parent;
-	FibHeapNode<Key>* child;
-	FibHeapNode<Key>* left;
-	FibHeapNode<Key>* right;
+	FibHeapNode<Key, Value>* parent;
+	FibHeapNode<Key, Value>* child;
+	FibHeapNode<Key, Value>* left;
+	FibHeapNode<Key, Value>* right;
 };
 
 /*
@@ -38,20 +39,20 @@ struct FibHeapNode
  *  m_min：斐波那契堆的最小结点（若堆为空，则为NULL）
  *  m_num：当前斐波那契堆中的结点个数
  */
-template<typename Key, typename Compare>
+template<typename Key, typename Value, typename Compare>
 class FibHeap
 {
 public:
 	FibHeap(Compare cmp, Key minKey);
 	~FibHeap();
 
-	virtual void Insert(FibHeapNode<Key>* x);
-	virtual void Delete(FibHeapNode<Key>* x);
-	virtual void DecreaseKey(FibHeapNode<Key>* x, Key _newKey);
-	virtual FibHeapNode<Key>* ExtractMin();
+	virtual void Insert(FibHeapNode<Key, Value>* x);
+	virtual void Delete(FibHeapNode<Key, Value>* x);
+	virtual void DecreaseKey(FibHeapNode<Key, Value>* x, Key _newKey);
+	virtual FibHeapNode<Key, Value>* ExtractMin();
 
 protected:
-	typedef FibHeapNode<Key> __fib_heap_node;
+	typedef FibHeapNode<Key, Value> __fib_heap_node;
 	typedef Key __fib_key;
 
 	void consolidate();
@@ -75,8 +76,8 @@ private:
  *  cmp：关键字 Key 的比较函数
  *  minKey：最小的关键字值
  */
-template<typename Key, typename Compare>
-inline FibHeap<Key, Compare>::FibHeap(Compare cmp, Key minKey)
+template<typename Key, typename Value, typename Compare>
+inline FibHeap<Key, Value, Compare>::FibHeap(Compare cmp, Key minKey)
 {
 	m_count = 0;
 	m_min = NULL;
@@ -84,8 +85,8 @@ inline FibHeap<Key, Compare>::FibHeap(Compare cmp, Key minKey)
 	m_minKey = minKey;
 }
 
-template<typename Key, typename Compare>
-inline FibHeap<Key, Compare>::~FibHeap()
+template<typename Key, typename Value, typename Compare>
+inline FibHeap<Key, Value, Compare>::~FibHeap()
 {
 	__fib_heap_node* x = NULL;
 	while (m_min){
@@ -102,8 +103,8 @@ inline FibHeap<Key, Compare>::~FibHeap()
  * 参数
  *  _Key：插入结点的关键字
  */
-template<typename Key, typename Compare>
-inline void FibHeap<Key, Compare>::Insert(FibHeapNode<Key>* x)
+template<typename Key, typename Value, typename Compare>
+inline void FibHeap<Key, Value, Compare>::Insert(FibHeapNode<Key, Value>* x)
 {
 	x->degree = 0;
 	x->parent = NULL;
@@ -131,8 +132,8 @@ inline void FibHeap<Key, Compare>::Insert(FibHeapNode<Key>* x)
 /*
  * 删除一个结点
  */
-template<typename Key, typename Compare>
-inline void FibHeap<Key, Compare>::Delete(FibHeapNode<Key>* x)
+template<typename Key, typename Value, typename Compare>
+inline void FibHeap<Key, Value, Compare>::Delete(FibHeapNode<Key, Value>* x)
 {
 	DecreaseKey(x, m_minKey);
 	__fib_heap_node* y = ExtractMin();
@@ -148,8 +149,8 @@ inline void FibHeap<Key, Compare>::Delete(FibHeapNode<Key>* x)
  *  x：减值的结点
  *  _newKey：新的关键字值
  */
-template<typename Key, typename Compare>
-inline void FibHeap<Key, Compare>::DecreaseKey(FibHeapNode<Key>* x, Key _newKey)
+template<typename Key, typename Value, typename Compare>
+inline void FibHeap<Key, Value, Compare>::DecreaseKey(FibHeapNode<Key, Value>* x, Key _newKey)
 {
 	if (compare(_newKey, x->key) > 0) {
 		// error: new key is greater than current key
@@ -176,8 +177,8 @@ inline void FibHeap<Key, Compare>::DecreaseKey(FibHeapNode<Key>* x, Key _newKey)
  * 返回值
  *  FibHeapNode<Key>*：指向最小结点的指针；若斐波那契堆为空，则返回 NULL
  */
-template<typename Key, typename Compare>
-inline FibHeapNode<Key>* FibHeap<Key, Compare>::ExtractMin()
+template<typename Key, typename Value, typename Compare>
+inline FibHeapNode<Key, Value>* FibHeap<Key, Value, Compare>::ExtractMin()
 {
 	__fib_heap_node* z = m_min;
 
@@ -215,8 +216,8 @@ inline FibHeapNode<Key>* FibHeap<Key, Compare>::ExtractMin()
 	return z;
 }
 
-template<typename Key, typename Compare>
-inline void FibHeap<Key, Compare>::consolidate()
+template<typename Key, typename Value, typename Compare>
+inline void FibHeap<Key, Value, Compare>::consolidate()
 {
 	__fib_heap_node** A = NULL; 
 	__fib_heap_node* x = NULL;
@@ -279,8 +280,8 @@ inline void FibHeap<Key, Compare>::consolidate()
 /*
  * 将 y 链接到 x
  */
-template<typename Key, typename Compare>
-inline void FibHeap<Key, Compare>::heap_link(__fib_heap_node * y, __fib_heap_node * x)
+template<typename Key, typename Value, typename Compare>
+inline void FibHeap<Key, Value, Compare>::heap_link(__fib_heap_node * y, __fib_heap_node * x)
 {
 	// remove y from the root list
 	y->right->left = y->left;
@@ -305,8 +306,8 @@ inline void FibHeap<Key, Compare>::heap_link(__fib_heap_node * y, __fib_heap_nod
 	x->degree++;
 }
 
-template<typename Key, typename Compare>
-inline void FibHeap<Key, Compare>::exchange(__fib_heap_node * y, __fib_heap_node * x)
+template<typename Key, typename Value, typename Compare>
+inline void FibHeap<Key, Value, Compare>::exchange(__fib_heap_node * y, __fib_heap_node * x)
 {
 	__fib_key tmp = y->key;
 	y->key = x->key;
@@ -316,8 +317,8 @@ inline void FibHeap<Key, Compare>::exchange(__fib_heap_node * y, __fib_heap_node
 /*
  * 切断 x 与父节点 y 之间的链接，使 x 成为根节点
  */
-template<typename Key, typename Compare>
-inline void FibHeap<Key, Compare>::cut(__fib_heap_node * x, __fib_heap_node * y)
+template<typename Key, typename Value, typename Compare>
+inline void FibHeap<Key, Value, Compare>::cut(__fib_heap_node * x, __fib_heap_node * y)
 {
 	// remove x from the child list of y, decrementing y.degree
 	if (x->left != x /* || x->right != x*/){
@@ -345,8 +346,8 @@ inline void FibHeap<Key, Compare>::cut(__fib_heap_node * x, __fib_heap_node * y)
 /*
  * 级联切断
  */
-template<typename Key, typename Compare>
-inline void FibHeap<Key, Compare>::cascading_cut(__fib_heap_node * y)
+template<typename Key, typename Value, typename Compare>
+inline void FibHeap<Key, Value, Compare>::cascading_cut(__fib_heap_node * y)
 {
 	__fib_heap_node* z = NULL;
 	z = y->parent;

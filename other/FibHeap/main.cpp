@@ -6,7 +6,7 @@ using namespace std;
 #define MAX_SIZE 1000
 #define MIN_KEY (~(1 << (sizeof(int) * 8 - 1)) + 1)
 
-typedef FibHeapNode<int> FIBNODE;
+typedef FibHeapNode<int, int> FIBNODE;
 
 typedef int(*Compare)(int, int);
 int compare(int k1, int k2) {
@@ -22,17 +22,21 @@ int compare(int k1, int k2) {
 int main() {
 	srand((unsigned)time(NULL));
 
-	FibHeap<int, Compare> fib(compare, MIN_KEY);
+	FibHeap<int, int, Compare> fib(compare, MIN_KEY);
 	
 	int keys[MAX_SIZE];
+	FIBNODE* x = NULL;
 	for (int i = 0; i < MAX_SIZE; i++) {
 		keys[i] = rand() % MAX_SIZE + 1;
 		// cout << keys[i] << " ";
-		FIBNODE* x = new FIBNODE();
+		x = new FIBNODE();
 		x->key = keys[i];
+		x->val = 100;
 		fib.Insert(x);
 	}
 	//cout << endl;
+
+	fib.DecreaseKey(x, 0);
 
 	FIBNODE* y = NULL, *z = NULL;
 	y = fib.ExtractMin();
