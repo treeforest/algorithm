@@ -54,6 +54,9 @@
 * MergeSort: 归并排序
 * BucketSort: 桶排序
 
+## 字符串匹配（string）
+* Naive: 朴素字符串匹配算法
+
 ## 其他（other）
 * FibHeap: 斐波那契堆
 
