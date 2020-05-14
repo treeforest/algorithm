@@ -53,6 +53,7 @@
 ### 其他排序
 * MergeSort: 归并排序
 * BucketSort: 桶排序
+* CountSort: 计数排序
 
 ## 字符串匹配（string）
 * Naive: 朴素字符串匹配算法
