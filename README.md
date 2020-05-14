@@ -56,7 +56,8 @@
 
 ## 字符串匹配（string）
 * Naive: 朴素字符串匹配算法
-* Rabin-Karp: 将字符计算hash后进行匹配的算法
+* Rabin-Karp 字符串匹配算法
+* KMP 字符串匹配算法
 
 ## 其他（other）
 * FibHeap: 斐波那契堆
