@@ -62,6 +62,7 @@
 
 ## 其他（other）
 * FibHeap: 斐波那契堆
+* LinkSet: 不相交集合的链表表示
 
 ## 练习（practice）
 * 大整数加法
