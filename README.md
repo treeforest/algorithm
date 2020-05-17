@@ -13,7 +13,8 @@
 ## 队列（queue）
 * SqQueue: 循环队列
 * LinkQueue: 链队列
-* PriorityQueue: 优先级队列
+* PriorityQueue: 优先级队列（二项堆-大根堆）
+* FibHeap: 优先级队列（斐波那契堆-小根堆）
 
 ## 树（tree）
 * BinaryTree: 二叉树(二叉搜索树)
@@ -62,7 +63,8 @@
 
 ## 其他（other）
 * FibHeap: 斐波那契堆
-* LinkSet: 不相交集合的链表表示
+* DisjointSetLink: 不相交集合的链表表示
+* DisjointSetForest: 不相交集合的森林表示
 
 ## 练习（practice）
 * 大整数加法
