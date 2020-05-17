@@ -1,26 +1,26 @@
-# 算法
+# 算法 ALGORITHM
 
-## 链表（list）
+# 链表 list
 * SeqList: 顺序表
 * LinkList: 单链表
 * StaticLinkList: 静态链表
 * DoubleLinkList: 双向链表 
 
-## 栈（stack）
+# 栈 stack
 * SqStack: 顺序栈
 * LinkStack: 链栈
 
-## 队列（queue）
+# 队列 queue
 * SqQueue: 循环队列
 * LinkQueue: 链队列
 * PriorityQueue: 优先级队列（二项堆-大根堆）
 * FibHeap: 优先级队列（斐波那契堆-小根堆）
 
-## 树（tree）
+# 树 tree
 * BinaryTree: 二叉树(二叉搜索树)
 * RBTree: 红黑树(实现有序集合 K-V 的存储)
 
-## 图论（graph）
+# 图论 graph
 * AdjacencyMatrix: 图的邻接矩阵存储(模板实现)
 * AdjacencyMatrix2: 图的邻接矩阵存储(非模板实现)
 * AdjacencyList: 图的邻接表存储
@@ -31,11 +31,11 @@
 * Floyd: 求各顶点之间最短路径
 * TopologicalSort: 拓扑排序
 
-## 查找（search）
+# 查找 search
 * SeqSearch: 顺序查找
 * BinarySearch: 折半查找
 
-## 排序（sort）
+# 排序 sort
 ### 插入排序
 * InsertSort: 直接插入排序
 * BinaryInsertSort: 折半插入排序
@@ -56,15 +56,14 @@
 * BucketSort: 桶排序
 * CountSort: 计数排序
 
-## 字符串匹配（string）
+# 字符串匹配 string
 * Naive: 朴素字符串匹配算法
 * Rabin-Karp 字符串匹配算法
 * KMP 字符串匹配算法
 
-## 其他（other）
-* FibHeap: 斐波那契堆
+# 其他 other
 * DisjointSetLink: 不相交集合的链表表示
 * DisjointSetForest: 不相交集合的森林表示
 
-## 练习（practice）
+# 练习 practice
 * 大整数加法
