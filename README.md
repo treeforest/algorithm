@@ -64,6 +64,7 @@
 # 其他 other
 * DisjointSetLink: 不相交集合的链表表示
 * DisjointSetForest: 不相交集合的森林表示
+* DeterministicSkipList: 确定性跳跃表
 
 # 练习 practice
 * 大整数加法
