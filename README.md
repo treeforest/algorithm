@@ -65,6 +65,7 @@
 * [DisjointSetLink](https://github.com/treeforest/algorithm/tree/master/other/DisjointSetLink): 不相交集合的链表表示
 * [DisjointSetForest](https://github.com/treeforest/algorithm/tree/master/other/DisjointSetForest): 不相交集合的森林表示
 * [DeterministicSkipList](https://github.com/treeforest/algorithm/tree/master/other/DeterministicSkipList): 确定性跳跃表
+* [LRU](https://github.com/treeforest/algorithm/tree/master/other/LRU): Least Recently Used(最近最少使用)算法
 
 # 练习 practice
 * [大整数加法](https://github.com/treeforest/algorithm/tree/master/practice/%E5%A4%A7%E6%95%B4%E6%95%B0%E5%8A%A0%E6%B3%95)
