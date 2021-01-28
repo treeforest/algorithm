@@ -1,4 +1,4 @@
-# 1001
+# 1001 A+B Format
 
 ## Problem
 
