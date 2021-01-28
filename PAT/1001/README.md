@@ -1,3 +1,11 @@
+# 1001
+
+## Problem
+
+https://pintia.cn/problem-sets/994805342720868352/problems/994805528788582400
+
+## Code
+```go
 package main
 
 import "fmt"
@@ -23,3 +31,4 @@ func main() {
 
 	fmt.Print(s)
 }
+```
