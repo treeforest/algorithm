@@ -3,4 +3,7 @@
 1002:
 	go run 1002/main.go
 
-.PHONY:1001 1002
+1003:
+	go run 1003/main.go
+
+.PHONY:1001 1002 1003
