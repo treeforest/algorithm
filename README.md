@@ -19,6 +19,7 @@
 ## 树 tree
 * [BinaryTree](https://github.com/treeforest/algorithm/tree/master/tree/BinaryTree): 二叉树(二叉搜索树)
 * [RBTree](https://github.com/treeforest/algorithm/tree/master/tree/RBTree): 红黑树(实现有序集合 K-V 的存储)
+* [Trie](https://github.com/treeforest/algorithm/tree/master/tree/Trie): 前缀树trie
 
 ## 图论 graph
 * [AdjacencyMatrix](https://github.com/treeforest/algorithm/tree/master/Graph/AdjacencyMatrix): 图的邻接矩阵存储(模板实现)
