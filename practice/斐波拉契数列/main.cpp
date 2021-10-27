@@ -27,16 +27,28 @@ using namespace std;
 
 
 // 方法三 dp数组迭代
-int fib(int N) {
-    if (N == 0) {
-        return 0;
+//int fib(int N) {
+//    if (N == 0) {
+//        return 0;
+//    }
+//    int* dp = new int[N + 1]();
+//    dp[0] = 0; dp[1] = 1;
+//    for (int i = 2; i <= N; i++) {
+//        dp[i] = dp[i - 1] + dp[i - 2];
+//    }
+//    return dp[N];
+//}
+
+// 方法四 直接迭代 时间复杂度O(n) 空间复杂度O(1)
+uint64_t fib(int N) {
+    if (N < 2) return N;
+    uint64_t f = 0;
+    uint64_t g = 1;
+    while (1 < N--) {
+        g = g + f;
+        f = g - f;
     }
-    int* dp = new int[N + 1]();
-    dp[0] = 0; dp[1] = 1;
-    for (int i = 2; i <= N; i++) {
-        dp[i] = dp[i - 1] + dp[i - 2];
-    }
-    return dp[N];
+    return g;
 }
 
 int main() {
